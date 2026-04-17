@@ -1,284 +1,203 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl" id="htmlPage">
+<html lang="ar" dir="rtl" id="mainHtml">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AGA - قطع غيار السيارات</title>
+    <title>AGA 2026 | متجر عبد العزيز</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap');
-        body { font-family: 'Cairo', sans-serif; background-color: #111827; color: white; }
-        .product-card { background: #1f2937; border: 1px solid #374151; transition: 0.3s; }
-        .product-card:hover { transform: translateY(-5px); border-color: #ef4444; }
-        .cart-modal { background: rgba(0,0,0,0.9); backdrop-filter: blur(10px); }
-        .admin-panel { border-top: 4px solid #ef4444; background: #1f2937; padding: 20px; border-radius: 20px 20px 0 0; }
+        :root { --gold: #d4af37; --dark: #0a0a0a; }
+        body { font-family: 'Cairo', sans-serif; background-color: var(--dark); color: white; margin: 0; }
+        .gold-text { color: var(--gold); }
+        .gold-bg { background-color: var(--gold); color: black; }
+        .card { background: #1a1a1a; border: 1px solid #333; border-radius: 20px; transition: 0.4s; overflow: hidden; }
+        .card:hover { border-color: var(--gold); transform: translateY(-5px); }
+        .admin-panel { border: 2px dashed var(--gold); background: #111; border-radius: 25px; padding: 25px; margin: 40px 0; }
+        .cart-modal { background: rgba(0,0,0,0.95); backdrop-filter: blur(10px); }
         .hidden { display: none; }
     </style>
 </head>
-<body class="pb-20">
+<body>
 
-    <nav class="p-4 bg-gray-900 sticky top-0 z-50 shadow-2xl flex justify-between items-center border-b border-gray-800">
-        <div class="flex items-center gap-2">
-            <span class="bg-red-600 text-white px-3 py-1 rounded-lg font-bold">AGA</span>
-            <h1 id="nav-title" class="text-lg font-bold">متجر عبد العزيز</h1>
+    <nav class="p-5 border-b border-gray-800 flex justify-between items-center sticky top-0 bg-black/80 z-50">
+        <div class="flex items-center gap-3">
+            <span class="gold-bg px-3 py-1 rounded font-bold">AGA</span>
+            <h1 id="navTitle" class="text-xl font-bold">محل عبد العزيز لقطع الغيار</h1>
         </div>
         <div class="flex items-center gap-4">
-            <select id="langSwitcher" onchange="updateLanguage()" class="bg-gray-800 text-white text-sm border-none rounded-md p-1 outline-none">
+            <select id="langSelect" onchange="changeLang()" class="bg-gray-900 border border-gray-700 text-white p-1 rounded">
                 <option value="ar">العربية</option>
                 <option value="fr">Français</option>
-                <option value="en">English</option>
             </select>
             <div class="relative cursor-pointer" onclick="toggleCart()">
-                <i class="fas fa-shopping-basket text-2xl text-red-500"></i>
-                <span id="cart-count" class="absolute -top-2 -right-2 bg-white text-red-600 text-xs font-bold px-2 rounded-full">0</span>
+                <i class="fas fa-shopping-bag text-2xl gold-text"></i>
+                <span id="cartCount" class="absolute -top-2 -right-2 bg-red-600 text-white text-[10px] px-1.5 rounded-full">0</span>
             </div>
         </div>
     </nav>
 
-    <div class="p-6 text-center">
-        <h2 id="hero-msg" class="text-2xl font-bold mb-4">ابحث عن قطعة غيارك الأصلية</h2>
-        <div class="relative max-w-xl mx-auto">
-            <input type="text" id="searchBar" onkeyup="search()" placeholder="ابحث هنا..." class="w-full p-4 rounded-xl bg-gray-800 border border-gray-700 focus:border-red-500 outline-none transition">
-            <i class="fas fa-search absolute left-4 top-4 text-gray-500"></i>
+    <header class="py-12 px-4 text-center">
+        <h2 id="heroTitle" class="text-3xl font-bold mb-6">ابحث عن قطعة غيارك الأصلية</h2>
+        <div class="max-w-2xl mx-auto relative">
+            <input type="text" id="searchInput" onkeyup="search()" placeholder="ماذا تحتاج اليوم؟..." class="w-full p-4 rounded-full bg-gray-900 border border-gray-700 outline-none focus:border-gold-500 transition">
+        </div>
+    </header>
+
+    <main class="container mx-auto p-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6" id="productGrid"></main>
+
+    <section class="container mx-auto p-4">
+        <div class="admin-panel shadow-2xl">
+            <h3 id="adminTitle" class="text-xl font-bold mb-6 gold-text flex items-center gap-2"><i class="fas fa-user-shield"></i> لوحة تحكم المدير</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="space-y-4">
+                    <input type="text" id="pName" placeholder="اسم المنتج" class="w-full p-3 bg-black border border-gray-800 rounded-lg">
+                    <input type="number" id="pPrice" placeholder="السعر (DA)" class="w-full p-3 bg-black border border-gray-800 rounded-lg">
+                    <div class="p-4 border border-gray-800 rounded-lg text-center">
+                        <label id="imgLabel" class="block text-sm mb-2 text-gray-500">اختر 3 صور للمنتج:</label>
+                        <input type="file" id="pImgs" multiple accept="image/*" class="text-xs">
+                    </div>
+                    <button onclick="addProduct()" id="addBtn" class="w-full gold-bg p-4 rounded-lg font-bold hover:opacity-90 transition">إضافة المنتج للموقع</button>
+                </div>
+                <div class="bg-black p-4 rounded-lg border border-gray-800 overflow-y-auto max-h-64" id="adminList"></div>
+            </div>
+        </div>
+    </section>
+
+    <div id="cartModal" class="fixed inset-0 cart-modal hidden z-[100] flex justify-end p-4">
+        <div class="w-full max-w-md bg-zinc-900 h-full p-6 shadow-2xl rounded-3xl flex flex-col border border-gray-800">
+            <h2 id="cartTitle" class="text-2xl font-bold mb-6 border-b border-gray-800 pb-4">سلة المقتنيات الاحترافية</h2>
+            <div id="cartItems" class="flex-1 overflow-y-auto space-y-4 mb-6"></div>
+            <div class="border-t border-gray-800 pt-4">
+                <div class="flex justify-between text-xl font-bold mb-6">
+                    <span id="totalLabel">الإجمالي:</span>
+                    <span class="gold-text"><span id="totalPrice">0</span> DA</span>
+                </div>
+                <div class="space-y-3 mb-6">
+                    <input type="text" id="uName" placeholder="الاسم الكامل" class="w-full p-3 bg-black border border-gray-700 rounded-lg outline-none">
+                    <input type="tel" id="uPhone" placeholder="رقم الهاتف" class="w-full p-3 bg-black border border-gray-700 rounded-lg outline-none">
+                    <input type="text" id="uLoc" placeholder="الولاية والبلدية" class="w-full p-3 bg-black border border-gray-700 rounded-lg outline-none">
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <button onclick="sendOrder('wa')" class="bg-green-600 p-4 rounded-xl font-bold flex items-center justify-center gap-2"><i class="fab fa-whatsapp"></i> WhatsApp</button>
+                    <button onclick="sendOrder('fb')" class="bg-blue-600 p-4 rounded-xl font-bold flex items-center justify-center gap-2"><i class="fab fa-facebook-messenger"></i> Facebook</button>
+                </div>
+                <button onclick="toggleCart()" class="w-full mt-4 text-gray-500 underline text-sm">إغلاق</button>
+            </div>
         </div>
     </div>
 
-    <div id="products-grid" class="grid grid-cols-1 md:grid-cols-3 gap-6 p-6">
-        </div>
-
-    <div class="admin-panel mt-10 max-w-4xl mx-auto">
-        <h3 id="admin-head" class="text-xl font-bold mb-4 text-red-500 text-center">لوحة تحكم المدير</h3>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div class="space-y-3">
-                <input type="text" id="p-name" placeholder="اسم المنتج" class="w-full p-3 bg-gray-700 rounded-lg outline-none">
-                <input type="number" id="p-price" placeholder="السعر" class="w-full p-3 bg-gray-700 rounded-lg outline-none">
-                <div class="flex flex-col gap-2">
-                    <label id="upload-label" class="text-sm text-gray-400">اختر 3 صور للمنتج:</label>
-                    <input type="file" id="p-imgs" multiple accept="image/*" class="text-sm">
-                </div>
-                <button onclick="addProduct()" id="add-btn" class="w-full bg-red-600 p-3 rounded-lg font-bold hover:bg-red-700 transition">إضافة المنتج للموقع</button>
-            </div>
-            <div id="admin-list" class="bg-gray-800 p-4 rounded-lg overflow-y-auto max-h-60 space-y-2">
-                </div>
-        </div>
-    </div>
-
-    <div id="cart-modal" class="fixed inset-0 cart-modal hidden z-[100] p-4">
-        <div class="max-w-lg mx-auto bg-gray-900 rounded-3xl p-6 shadow-2xl border border-gray-700">
-            <h2 id="cart-title" class="text-2xl font-bold mb-4 border-b border-gray-800 pb-2">سلة المقتنيات</h2>
-            <div id="cart-items" class="space-y-4 max-h-60 overflow-y-auto mb-4"></div>
-            <div class="flex justify-between text-xl font-bold mb-6">
-                <span id="total-label">الإجمالي:</span>
-                <span class="text-red-500"><span id="total-price">0</span> DA</span>
-            </div>
-            
-            <div id="checkout-form" class="space-y-3 mb-6">
-                <input type="text" id="cust-name" placeholder="الاسم الكامل" class="w-full p-3 bg-gray-800 rounded-lg outline-none border border-gray-700">
-                <input type="tel" id="cust-phone" placeholder="رقم الهاتف" class="w-full p-3 bg-gray-800 rounded-lg outline-none border border-gray-700">
-                <div class="grid grid-cols-2 gap-2">
-                    <input type="text" id="cust-state" placeholder="الولاية" class="w-full p-3 bg-gray-800 rounded-lg outline-none border border-gray-700">
-                    <input type="text" id="cust-city" placeholder="البلدية" class="w-full p-3 bg-gray-800 rounded-lg outline-none border border-gray-700">
-                </div>
-            </div>
-
-            <div class="grid grid-cols-2 gap-3">
-                <button onclick="sendOrder('wa')" class="bg-green-600 p-3 rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-green-700 transition">
-                    <i class="fab fa-whatsapp"></i> WhatsApp
-                </button>
-                <button onclick="sendOrder('fb')" class="bg-blue-600 p-3 rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-blue-700 transition">
-                    <i class="fab fa-facebook"></i> Messenger
-                </button>
-            </div>
-            <button onclick="toggleCart()" id="close-cart" class="w-full mt-4 text-gray-500 text-sm">إغلاق السلة</button>
-        </div>
-    </div>
-
-    <footer class="p-10 text-center bg-gray-900 mt-10 border-t border-gray-800">
-        <p class="text-red-500 font-bold text-xl mb-2">AGA - قطع غيار السيارات</p>
-        <p id="footer-text" class="text-gray-400 text-sm max-w-md mx-auto leading-relaxed">نحن نوفر لكم أجود قطع الغيار الأصلية مع خدمة توصيل سريعة لجميع الولايات. ثقتكم هي هدفنا.</p>
-        <div class="mt-6 text-gray-600 text-xs">© 2026 تصميم احترافي مبهر - ابن صاحب الموقع</div>
+    <footer class="bg-black py-16 mt-20 border-t border-gray-900 text-center">
+        <h2 class="gold-text font-bold text-2xl mb-4">AGA - عبد العزيز لقطع الغيار</h2>
+        <p id="footerText" class="text-gray-500 max-w-md mx-auto text-sm px-4">نحن نوفر لكم أجود قطع الغيار الأصلية مع خدمة توصيل سريعة لجميع الولايات. ثقتكم هي هدفنا.</p>
+        <div class="mt-8 text-gray-700 text-[10px] tracking-widest uppercase italic">تصميم احترافي مبهر © 2026 - ابن صاحب الموقع</div>
     </footer>
 
     <script>
-        let products = JSON.parse(localStorage.getItem('aga_products')) || [];
+        let products = JSON.parse(localStorage.getItem('aga_2026_v1')) || [];
         let cart = [];
+        let currentLang = 'ar';
 
         const translations = {
-            ar: {
-                nav: "متجر عبد العزيز", hero: "ابحث عن قطعة غيارك الأصلية", search: "ابحث هنا...", 
-                admin: "لوحة تحكم المدير", add: "إضافة المنتج للموقع", name: "اسم المنتج", price: "السعر",
-                cart: "سلة المقتنيات", total: "الإجمالي", close: "إغلاق السلة",
-                cName: "الاسم الكامل", cPhone: "رقم الهاتف", cState: "الولاية", cCity: "البلدية",
-                footer: "نحن نوفر لكم أجود قطع الغيار الأصلية مع خدمة توصيل سريعة لجميع الولايات. ثقتكم هي هدفنا.",
-                addToCart: "إضافة للسلة"
-            },
-            fr: {
-                nav: "Boutique Aziz", hero: "Trouvez vos pièces d'origine", search: "Chercher ici...",
-                admin: "Panneau d'administration", add: "Ajouter au site", name: "Nom du produit", price: "Prix",
-                cart: "Panier", total: "Total", close: "Fermer",
-                cName: "Nom complet", cPhone: "Téléphone", cState: "Wilaya", cCity: "Commune",
-                footer: "Nous fournissons les meilleures pièces d'origine avec livraison rapide. Votre confiance est notre objectif.",
-                addToCart: "Ajouter au panier"
-            },
-            en: {
-                nav: "Aziz Store", hero: "Find your original spare parts", search: "Search here...",
-                admin: "Admin Panel", add: "Add Product", name: "Product Name", price: "Price",
-                cart: "Shopping Cart", total: "Total", close: "Close Cart",
-                cName: "Full Name", cPhone: "Phone Number", cState: "State", cCity: "City",
-                footer: "We provide high-quality original spare parts with fast delivery. Your trust is our priority.",
-                addToCart: "Add to cart"
-            }
+            ar: { nav: "محل عبد العزيز لقطع الغيار", hero: "ابحث عن قطعة غيارك الأصلية", search: "ماذا تحتاج اليوم؟...", admin: "لوحة تحكم المدير", add: "إضافة المنتج للموقع", pName: "اسم المنتج", pPrice: "السعر (DA)", imgL: "اختر 3 صور للمنتج:", cartT: "سلة المقتنيات الاحترافية", totalL: "الإجمالي:", uName: "الاسم الكامل", uPhone: "رقم الهاتف", uLoc: "الولاية والبلدية", footer: "نحن نوفر لكم أجود قطع الغيار الأصلية مع خدمة توصيل سريعة لجميع الولايات. ثقتكم هي هدفنا.", addToCart: "إضافة للسلة", del: "حذف", edit: "تعديل السعر" },
+            fr: { nav: "Ets Aziz Pièces Auto", hero: "Trouvez vos pièces d'origine", search: "Chercher ici...", admin: "Panel d'administration", add: "Ajouter le produit", pName: "Nom du produit", pPrice: "Prix (DA)", imgL: "Choisir 3 photos:", cartT: "Panier d'achat Pro", totalL: "Total:", uName: "Nom Complet", uPhone: "N° Téléphone", uLoc: "Wilaya et Commune", footer: "Qualité originale et livraison rapide dans toutes les wilayas. Votre confiance est notre priorité.", addToCart: "Ajouter au panier", del: "Supprimer", edit: "Modifier Prix" }
         };
 
-        function updateLanguage() {
-            const lang = document.getElementById('langSwitcher').value;
-            const t = translations[lang];
-            document.getElementById('htmlPage').dir = lang === 'ar' ? 'rtl' : 'ltr';
-            document.getElementById('nav-title').innerText = t.nav;
-            document.getElementById('hero-msg').innerText = t.hero;
-            document.getElementById('searchBar').placeholder = t.search;
-            document.getElementById('admin-head').innerText = t.admin;
-            document.getElementById('add-btn').innerText = t.add;
-            document.getElementById('p-name').placeholder = t.name;
-            document.getElementById('p-price').placeholder = t.price;
-            document.getElementById('cart-title').innerText = t.cart;
-            document.getElementById('total-label').innerText = t.total;
-            document.getElementById('close-cart').innerText = t.close;
-            document.getElementById('cust-name').placeholder = t.cName;
-            document.getElementById('cust-phone').placeholder = t.cPhone;
-            document.getElementById('cust-state').placeholder = t.cState;
-            document.getElementById('cust-city').placeholder = t.cCity;
-            document.getElementById('footer-text').innerText = t.footer;
+        function changeLang() {
+            currentLang = document.getElementById('langSelect').value;
+            const t = translations[currentLang];
+            document.getElementById('mainHtml').dir = currentLang === 'ar' ? 'rtl' : 'ltr';
+            document.getElementById('navTitle').innerText = t.nav;
+            document.getElementById('heroTitle').innerText = t.hero;
+            document.getElementById('searchInput').placeholder = t.search;
+            document.getElementById('adminTitle').innerHTML = `<i class="fas fa-user-shield"></i> ` + t.admin;
+            document.getElementById('addBtn').innerText = t.add;
+            document.getElementById('pName').placeholder = t.pName;
+            document.getElementById('pPrice').placeholder = t.pPrice;
+            document.getElementById('imgLabel').innerText = t.imgL;
+            document.getElementById('cartTitle').innerText = t.cartT;
+            document.getElementById('totalLabel').innerText = t.totalL;
+            document.getElementById('uName').placeholder = t.uName;
+            document.getElementById('uPhone').placeholder = t.uPhone;
+            document.getElementById('uLoc').placeholder = t.uLoc;
+            document.getElementById('footerText').innerText = t.footer;
             renderProducts();
         }
 
         async function addProduct() {
-            const name = document.getElementById('p-name').value;
-            const price = document.getElementById('p-price').value;
-            const imgFiles = document.getElementById('p-imgs').files;
-
-            if(!name || !price || imgFiles.length === 0) return alert("أدخل جميع البيانات!");
-
+            const name = document.getElementById('pName').value;
+            const price = document.getElementById('pPrice').value;
+            const files = document.getElementById('pImgs').files;
+            if(!name || !price || files.length === 0) return alert("يرجى ملء كافة البيانات!");
+            
             let imgs = [];
-            for (let file of imgFiles) {
-                const base64 = await toBase64(file);
-                imgs.push(base64);
-            }
-
+            for(let f of files) imgs.push(await toBase64(f));
+            
             products.push({ id: Date.now(), name, price, imgs });
-            localStorage.setItem('aga_products', JSON.stringify(products));
+            localStorage.setItem('aga_2026_v1', JSON.stringify(products));
             location.reload();
         }
 
-        const toBase64 = file => new Promise((res, rej) => {
-            const reader = new FileReader();
-            reader.readAsDataURL(file);
-            reader.onload = () => res(reader.result);
-        });
+        const toBase64 = f => new Promise(res => { const r = new FileReader(); r.readAsDataURL(f); r.onload = () => res(r.result); });
 
         function renderProducts(data = products) {
-            const grid = document.getElementById('products-grid');
-            const lang = document.getElementById('langSwitcher').value;
-            grid.innerHTML = data.map(p => `
-                <div class="product-card rounded-2xl overflow-hidden shadow-xl">
-                    <img src="${p.imgs[0]}" class="w-full h-48 object-cover">
+            const t = translations[currentLang];
+            document.getElementById('productGrid').innerHTML = data.map(p => `
+                <div class="card shadow-2xl">
+                    <img src="${p.imgs[0]}" class="w-full h-56 object-cover border-b border-gray-800 cursor-pointer" onclick="viewImgs(${p.id})">
                     <div class="p-5">
                         <h3 class="font-bold text-lg mb-2">${p.name}</h3>
-                        <p class="text-red-500 font-bold mb-4">${p.price} DA</p>
-                        <button onclick="addToCart(${p.id})" class="w-full bg-white text-black py-2 rounded-lg font-bold hover:bg-red-500 hover:text-white transition">
-                            <i class="fas fa-cart-plus"></i> ${translations[lang].addToCart}
+                        <p class="gold-text font-bold text-xl mb-6">${p.price} DA</p>
+                        <button onclick="addToCart(${p.id})" class="w-full border border-gold-500 py-3 rounded-xl font-bold hover:gold-bg transition uppercase text-xs tracking-widest">
+                            <i class="fas fa-cart-plus"></i> ${t.addToCart}
                         </button>
                     </div>
                 </div>
             `).join('');
 
-            // قائمة الإدارة للتعديل والحذف
-            document.getElementById('admin-list').innerHTML = products.map(p => `
-                <div class="flex justify-between items-center bg-gray-900 p-2 rounded-lg border border-gray-700">
-                    <span class="text-xs truncate w-24">${p.name}</span>
-                    <div class="flex gap-2">
-                        <button onclick="deleteProduct(${p.id})" class="text-red-500"><i class="fas fa-trash"></i></button>
-                        <button onclick="editPrice(${p.id})" class="text-blue-500"><i class="fas fa-edit"></i></button>
+            document.getElementById('adminList').innerHTML = products.map(p => `
+                <div class="flex justify-between items-center bg-zinc-900 p-3 rounded-lg mb-2 border border-gray-800">
+                    <span class="text-xs font-bold truncate w-24">${p.name}</span>
+                    <div class="flex gap-4">
+                        <button onclick="editPrice(${p.id})" class="text-blue-400 text-xs underline">${t.edit}</button>
+                        <button onclick="delProduct(${p.id})" class="text-red-500 text-xs underline">${t.del}</button>
                     </div>
                 </div>
             `).join('');
         }
 
-        function deleteProduct(id) {
-            products = products.filter(p => p.id !== id);
-            localStorage.setItem('aga_products', JSON.stringify(products));
-            renderProducts();
-        }
-
-        function editPrice(id) {
-            const newPrice = prompt("أدخل السعر الجديد:");
-            if (newPrice) {
-                const product = products.find(p => p.id === id);
-                product.price = newPrice;
-                localStorage.setItem('aga_products', JSON.stringify(products));
-                renderProducts();
-            }
-        }
-
-        function addToCart(id) {
-            const product = products.find(p => p.id === id);
-            cart.push(product);
-            updateCart();
-        }
-
+        function addToCart(id) { cart.push(products.find(p => p.id === id)); updateCart(); }
         function updateCart() {
-            document.getElementById('cart-count').innerText = cart.length;
-            const items = document.getElementById('cart-items');
-            items.innerHTML = cart.map((p, index) => `
-                <div class="flex justify-between items-center bg-gray-800 p-3 rounded-xl">
-                    <div class="flex items-center gap-3">
-                        <img src="${p.imgs[0]}" class="w-10 h-10 rounded-lg">
-                        <span class="font-bold text-sm">${p.name}</span>
+            document.getElementById('cartCount').innerText = cart.length;
+            document.getElementById('cartItems').innerHTML = cart.map((p, i) => `
+                <div class="flex items-center gap-4 bg-black p-4 rounded-xl border border-gray-800">
+                    <img src="${p.imgs[0]}" class="w-16 h-16 rounded-lg object-cover">
+                    <div class="flex-1">
+                        <p class="font-bold text-sm">${p.name}</p>
+                        <p class="gold-text font-bold text-xs">${p.price} DA</p>
                     </div>
-                    <div class="flex items-center gap-4">
-                        <span class="text-red-500 font-bold text-sm">${p.price} DA</span>
-                        <button onclick="removeFromCart(${index})" class="text-gray-500 hover:text-red-500"><i class="fas fa-times"></i></button>
-                    </div>
+                    <button onclick="removeFromCart(${i})" class="text-red-500"><i class="fas fa-trash"></i></button>
                 </div>
             `).join('');
-            
-            const total = cart.reduce((sum, p) => sum + parseFloat(p.price), 0);
-            document.getElementById('total-price').innerText = total;
+            document.getElementById('totalPrice').innerText = cart.reduce((a, b) => a + parseFloat(b.price), 0);
         }
 
-        function removeFromCart(index) {
-            cart.splice(index, 1);
-            updateCart();
-        }
-
-        function toggleCart() { document.getElementById('cart-modal').classList.toggle('hidden'); }
+        function removeFromCart(i) { cart.splice(i, 1); updateCart(); }
+        function toggleCart() { document.getElementById('cartModal').classList.toggle('hidden'); }
+        function delProduct(id) { products = products.filter(p => p.id !== id); localStorage.setItem('aga_2026_v1', JSON.stringify(products)); renderProducts(); }
+        function editPrice(id) { const p = products.find(x => x.id === id); const newPrice = prompt("أدخل السعر الجديد:", p.price); if(newPrice) { p.price = newPrice; localStorage.setItem('aga_2026_v1', JSON.stringify(products)); renderProducts(); } }
+        function search() { const q = document.getElementById('searchInput').value.toLowerCase(); renderProducts(products.filter(p => p.name.toLowerCase().includes(q))); }
 
         function sendOrder(type) {
-            const name = document.getElementById('cust-name').value;
-            const phone = document.getElementById('cust-phone').value;
-            const state = document.getElementById('cust-state').value;
-            const city = document.getElementById('cust-city').value;
-
-            if(!name || !phone || cart.length === 0) return alert("أكمل البيانات واختر منتجاتك أولاً!");
-
-            let itemsTxt = cart.map(p => `• ${p.name} (${p.price} DA)`).join('%0A');
-            let msg = `*طلب جديد من متجر AGA*%0A%0A*الاسم:* ${name}%0A*الهاتف:* ${phone}%0A*العنوان:* ${state} - ${city}%0A%0A*المقتنيات:*%0A${itemsTxt}%0A%0A*الإجمالي:* ${document.getElementById('total-price').innerText} DA`;
-
-            if(type === 'wa') {
-                window.open(`https://wa.me/213663435686?text=${msg}`);
-            } else {
-                window.open(`https://www.facebook.com/share/17DhVqMX9e/`);
-            }
+            const name = document.getElementById('uName').value, phone = document.getElementById('uPhone').value, loc = document.getElementById('uLoc').value;
+            if(!name || !phone || cart.length === 0) return alert("يرجى إكمال بيانات الطلب!");
+            let msg = `🛒 *طلب جديد من متجر AGA*%0A👤 *الزبون:* ${name}%0A📞 *الهاتف:* ${phone}%0A📍 *العنوان:* ${loc}%0A%0A*الطلبات:*%0A` + cart.map(x => `• ${x.name} (${x.price} DA)`).join('%0A');
+            msg += `%0A%0A💰 *الإجمالي:* ${document.getElementById('totalPrice').innerText} DA`;
+            window.open(type === 'wa' ? `https://wa.me/213663435686?text=${msg}` : `https://www.facebook.com/share/17DhVqMX9e/`);
         }
 
-        function search() {
-            const query = document.getElementById('searchBar').value.toLowerCase();
-            const filtered = products.filter(p => p.name.toLowerCase().includes(query));
-            renderProducts(filtered);
-        }
-
-        window.onload = renderProducts;
+        window.onload = () => { changeLang(); };
     </script>
 </body>
 </html>
