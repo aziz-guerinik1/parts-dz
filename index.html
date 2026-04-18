@@ -3,189 +3,98 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AZIZ Auto Parts | عزيز لقطع الغيار</title>
+    <title>عزيز لقطع غيار السيارات</title>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary-color: #e63946; /* لون أحمر رياضي للسيارات */
-            --bg-color: #f8f9fa;
-            --card-bg: #ffffff;
-            --text-main: #1d3557;
+            --main-red: #e63946;
+            --dark-blue: #1d3557;
+            --bg-gray: #f8f9fa;
         }
 
         body {
             font-family: 'Cairo', sans-serif;
-            background-color: var(--bg-color);
-            margin: 0;
-            padding: 0;
-            color: var(--text-main);
+            background-color: var(--bg-gray);
+            margin: 0; padding: 0;
         }
 
-        /* الهيدر - يشبه djaferstore */
+        /* الهيدر */
         header {
-            background: #fff;
-            padding: 20px;
+            background: white;
+            padding: 15px;
             text-align: center;
             box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-        }
-
-        .logo {
-            font-size: 24px;
             font-weight: bold;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            color: var(--primary-color);
+            font-size: 22px;
+            color: var(--dark-blue);
+            position: sticky; top: 0; z-index: 100;
         }
 
-        /* قائمة التصنيفات */
-        .categories {
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-            padding: 20px;
-            overflow-x: auto;
-        }
-
-        .cat-item {
-            background: #fff;
-            padding: 10px 25px;
-            border-radius: 50px;
-            font-size: 14px;
-            cursor: pointer;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-            transition: 0.3s;
-            border: 1px solid #eee;
-            white-space: nowrap;
-        }
-
-        .cat-item.active, .cat-item:hover {
-            background: #000;
-            color: #fff;
-        }
-
-        /* شبكة المنتجات - مثل الصور التي أرفقتها */
-        .products-grid {
+        /* حاوية المنتجات */
+        .container {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-            gap: 20px;
-            padding: 20px;
-            max-width: 1200px;
-            margin: 0 auto;
+            grid-template-columns: repeat(2, 1fr); /* بطاقتين في كل سطر مثل الصور */
+            gap: 15px;
+            padding: 15px;
         }
 
-        .product-card {
-            background: var(--card-bg);
-            border-radius: 20px;
+        /* بطاقة المنتج */
+        .card {
+            background: white;
+            border-radius: 15px;
             overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+            text-align: center;
             position: relative;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.02);
-            transition: transform 0.3s;
         }
 
-        .product-card:hover {
-            transform: translateY(-5px);
-        }
-
-        .badge {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            background: var(--primary-color);
-            color: #fff;
-            padding: 5px 10px;
-            border-radius: 10px;
-            font-size: 12px;
-            font-weight: bold;
-            z-index: 10;
-        }
-
-        .product-image {
+        .card img {
             width: 100%;
             aspect-ratio: 1/1;
             object-fit: cover;
-            background: #f0f0f0;
         }
 
-        .product-info {
-            padding: 15px;
-            text-align: center;
+        .card-info {
+            padding: 12px;
         }
 
-        .product-name {
-            font-size: 16px;
-            font-weight: 700;
-            margin-bottom: 10px;
-            display: block;
-        }
-
-        .product-price {
-            background: #f8f9fa;
-            padding: 8px;
-            border-radius: 12px;
+        .card-title {
+            font-size: 14px;
             font-weight: bold;
-            display: inline-block;
-            width: 80%;
+            margin-bottom: 8px;
+            color: #333;
         }
 
-        .currency {
-            font-size: 12px;
-            margin-right: 5px;
+        .card-price {
+            background: #f1f3f5;
+            padding: 6px;
+            border-radius: 10px;
+            font-weight: bold;
+            color: black;
         }
 
-        /* زر الإضافة العائم (اختياري) */
-        .add-btn {
-            position: fixed;
-            bottom: 30px;
-            left: 30px;
-            background: var(--primary-color);
+        /* التوسيمات (مثل -5%) */
+        .badge {
+            position: absolute;
+            top: 10px; left: 10px;
+            background: var(--main-red);
             color: white;
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 30px;
-            text-decoration: none;
-            box-shadow: 0 5px 20px rgba(230, 57, 70, 0.4);
+            padding: 3px 8px;
+            border-radius: 5px;
+            font-size: 11px;
         }
 
         @media (min-width: 768px) {
-            .products-grid {
-                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-            }
+            .container { grid-template-columns: repeat(4, 1fr); }
         }
     </style>
 </head>
 <body>
 
-    <header>
-        <div class="logo">AZIZ AUTO PARTS</div>
-    </header>
+    <header>AZIZ AUTO PARTS</header>
 
-    <div class="categories">
-        <div class="cat-item active">الكل</div>
-        <div class="cat-item">محركات</div>
-        <div class="cat-item">فرامل</div>
-        <div class="cat-item">إضاءة</div>
-        <div class="cat-item">إكسسوارات</div>
-    </div>
-
-    <div class="products-grid" id="productsContainer">
-        <div class="product-card">
-            <div class="badge">-10%</div>
-            <img src="https://via.placeholder.com/300x300?text=Turbo+S" class="product-image" alt="قطعة غيار">
-            <div class="product-info">
-                <span class="product-name">شاحن تيربو مرسيدس</span>
-                <div class="product-price">
-                    15,000 <span class="currency">DZD</span>
-                </div>
-            </div>
+    <div class="container" id="products-list">
         </div>
-    </div>
 
     <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-database-compat.js"></script>
@@ -204,25 +113,22 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
 
-        // دالة لجلب البيانات وعرضها بشكل تلقائي
-        const container = document.getElementById('productsContainer');
-
+        // عرض السلعة في الصفحة
         db.ref('products').on('value', (snapshot) => {
-            container.innerHTML = ''; // تنظيف الحاوية
-            snapshot.forEach((childSnapshot) => {
-                const data = childSnapshot.val();
-                const productHTML = `
-                    <div class="product-card">
-                        <img src="${data.img || 'https://via.placeholder.com/300'}" class="product-image">
-                        <div class="product-info">
-                            <span class="product-name">${data.name}</span>
-                            <div class="product-price">
-                                ${data.price} <span class="currency">DZD</span>
-                            </div>
+            const list = document.getElementById('products-list');
+            list.innerHTML = '';
+            snapshot.forEach((child) => {
+                const item = child.val();
+                list.innerHTML += `
+                    <div class="card">
+                        <div class="badge">جديد</div>
+                        <img src="${item.img || 'https://via.placeholder.com/300'}">
+                        <div class="card-info">
+                            <div class="card-title">${item.name}</div>
+                            <div class="card-price">${item.price} DA</div>
                         </div>
                     </div>
                 `;
-                container.innerHTML += productHTML;
             });
         });
     </script>
