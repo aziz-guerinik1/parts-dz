@@ -3,134 +3,954 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>عزيز لقطع غيار السيارات</title>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
+    <title>Syrat Auto Parts | صيرات لقطع الغيار</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Tailwind Config for Royal Theme -->
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        royal: {
+                            black: '#050505',
+                            dark: '#0f0f0f',
+                            card: '#1a1a1a',
+                            gold: '#d4af37',
+                            goldLight: '#f3e5ab',
+                            goldDark: '#aa8c2c'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Poppins', 'sans-serif'],
+                        arabic: ['Cairo', 'sans-serif'],
+                    },
+                    animation: {
+                        'ripple': 'ripple 4s ease-in-out infinite',
+                        'float': 'float 3s ease-in-out infinite',
+                        'shine': 'shine 2s linear infinite',
+                    },
+                    keyframes: {
+                        ripple: {
+                            '0%, 100%': { backgroundPosition: '0% 50%' },
+                            '50%': { backgroundPosition: '100% 50%' },
+                        },
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-10px)' },
+                        },
+                        shine: {
+                            '0%': { backgroundPosition: '-200% center' },
+                            '100%': { backgroundPosition: '200% center' }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
     <style>
-        :root {
-            --main-red: #e63946;
-            --dark-blue: #1d3557;
-            --bg-gray: #f8f9fa;
-        }
-
+        /* Global Styles */
         body {
-            font-family: 'Cairo', sans-serif;
-            background-color: var(--bg-gray);
-            margin: 0; padding: 0;
+            background-color: #050505;
+            color: #ffffff;
+            overflow-x: hidden;
         }
 
-        /* الهيدر */
-        header {
-            background: white;
-            padding: 15px;
-            text-align: center;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-            font-weight: bold;
-            font-size: 22px;
-            color: var(--dark-blue);
-            position: sticky; top: 0; z-index: 100;
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0f0f0f;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #d4af37;
+            border-radius: 4px;
         }
 
-        /* حاوية المنتجات */
-        .container {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr); /* بطاقتين في كل سطر مثل الصور */
-            gap: 15px;
-            padding: 15px;
+        /* Gold Gradient Text */
+        .text-gradient-gold {
+            background: linear-gradient(to right, #d4af37, #f3e5ab, #d4af37);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-size: 200% auto;
+            animation: shine 3s linear infinite;
         }
 
-        /* بطاقة المنتج */
-        .card {
-            background: white;
-            border-radius: 15px;
-            overflow: hidden;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.03);
-            text-align: center;
+        /* Water Ripple Background Effect */
+        .hero-bg {
+            background: linear-gradient(45deg, #050505, #1a1a1a, #050505);
+            background-size: 400% 400%;
             position: relative;
+            overflow: hidden;
         }
-
-        .card img {
-            width: 100%;
-            aspect-ratio: 1/1;
-            object-fit: cover;
-        }
-
-        .card-info {
-            padding: 12px;
-        }
-
-        .card-title {
-            font-size: 14px;
-            font-weight: bold;
-            margin-bottom: 8px;
-            color: #333;
-        }
-
-        .card-price {
-            background: #f1f3f5;
-            padding: 6px;
-            border-radius: 10px;
-            font-weight: bold;
-            color: black;
-        }
-
-        /* التوسيمات (مثل -5%) */
-        .badge {
+        .hero-bg::before {
+            content: '';
             position: absolute;
-            top: 10px; left: 10px;
-            background: var(--main-red);
-            color: white;
-            padding: 3px 8px;
-            border-radius: 5px;
-            font-size: 11px;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: radial-gradient(circle at center, rgba(212, 175, 55, 0.1) 0%, transparent 70%);
+            animation: ripple 6s ease-in-out infinite;
         }
 
-        @media (min-width: 768px) {
-            .container { grid-template-columns: repeat(4, 1fr); }
+        /* Glassmorphism */
+        .glass {
+            background: rgba(26, 26, 26, 0.8);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(212, 175, 55, 0.2);
+        }
+
+        /* Input Styling */
+        input, textarea, select {
+            background-color: #0f0f0f !important;
+            border: 1px solid #333 !important;
+            color: white !important;
+            transition: all 0.3s ease;
+        }
+        input:focus, textarea:focus, select:focus {
+            border-color: #d4af37 !important;
+            outline: none;
+            box-shadow: 0 0 10px rgba(212, 175, 55, 0.3);
+        }
+
+        /* Language Switcher */
+        .lang-btn {
+            transition: all 0.3s;
+        }
+        .lang-btn.active {
+            background-color: #d4af37;
+            color: black;
+            font-weight: bold;
         }
     </style>
 </head>
-<body>
+<body class="font-sans antialiased min-h-screen flex flex-col">
 
-    <header>AZIZ AUTO PARTS</header>
+    <!-- Navigation -->
+    <nav class="fixed top-0 w-full z-50 glass border-b border-royal-gold/30">
+        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+            <!-- Logo -->
+            <div class="flex items-center gap-2">
+                <i class="fa-solid fa-gear text-royal-gold text-2xl animate-spin-slow" style="animation-duration: 10s;"></i>
+                <div>
+                    <h1 class="text-xl font-bold font-arabic text-royal-gold">صيرات</h1>
+                    <p class="text-xs text-gray-400 hidden sm:block">Syrat Auto Parts</p>
+                </div>
+            </div>
 
-    <div class="container" id="products-list">
+            <!-- Actions -->
+            <div class="flex items-center gap-4">
+                <!-- Language Switcher -->
+                <div class="hidden md:flex gap-1 bg-black/50 rounded-full p-1">
+                    <button onclick="setLanguage('ar')" id="btn-ar" class="lang-btn px-3 py-1 rounded-full text-sm active">عربي</button>
+                    <button onclick="setLanguage('en')" id="btn-en" class="lang-btn px-3 py-1 rounded-full text-sm">En</button>
+                    <button onclick="setLanguage('fr')" id="btn-fr" class="lang-btn px-3 py-1 rounded-full text-sm">Fr</button>
+                </div>
+
+                <!-- Cart Button -->
+                <button onclick="toggleCart()" class="relative p-2 text-royal-gold hover:text-white transition">
+                    <i class="fa-solid fa-cart-shopping text-xl"></i>
+                    <span id="cart-count" class="absolute -top-1 -right-1 bg-red-600 text-white text-xs w-5 h-5 flex items-center justify-center rounded-full opacity-0 transition-opacity">0</span>
+                </button>
+
+                <!-- Admin Login Button -->
+                <button onclick="openAdminLogin()" class="p-2 text-gray-400 hover:text-royal-gold transition" title="Admin Area">
+                    <i class="fa-solid fa-user-lock text-xl"></i>
+                </button>
+            </div>
+        </div>
+        <!-- Mobile Lang Selector -->
+        <div class="md:hidden flex justify-center gap-2 pb-2">
+             <button onclick="setLanguage('ar')" id="btn-ar-m" class="lang-btn px-2 py-1 rounded text-xs bg-royal-gold text-black font-bold">عربي</button>
+             <button onclick="setLanguage('en')" id="btn-en-m" class="lang-btn px-2 py-1 rounded text-xs border border-gray-600">En</button>
+             <button onclick="setLanguage('fr')" id="btn-fr-m" class="lang-btn px-2 py-1 rounded text-xs border border-gray-600">Fr</button>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header class="hero-bg pt-32 pb-20 px-4 text-center">
+        <div class="container mx-auto relative z-10">
+            <div class="animate-float">
+                <i class="fa-solid fa-crown text-5xl text-royal-gold mb-6"></i>
+            </div>
+            <h2 class="text-3xl md:text-5xl font-bold font-arabic mb-4 text-white leading-tight">
+                <span data-i18n="hero_title_owner">صاحب موقع عبد العزيز قرينيك</span>
+            </h2>
+            <p class="text-lg md:text-xl text-gray-300 mb-6 max-w-3xl mx-auto leading-relaxed font-arabic" data-i18n="hero_desc">
+                محل متواجد في ولاية نعامة دائرة عين صفراء. خدمة توصيل متوفرة إلى جميع ولايات وطن 69.
+            </p>
+            <div class="flex justify-center gap-4 mt-8">
+                <a href="https://www.facebook.com/share/17DhVqMX9e/" target="_blank" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg transition flex items-center gap-2">
+                    <i class="fa-brands fa-facebook"></i> <span data-i18n="follow_fb">تابعنا على فيسبوك</span>
+                </a>
+                <a href="https://wa.me/213663435686" target="_blank" class="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-lg transition flex items-center gap-2">
+                    <i class="fa-brands fa-whatsapp"></i> <span data-i18n="contact_wa">تواصل معنا</span>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex-grow container mx-auto px-4 py-12">
+        
+        <!-- Filter/Heading -->
+        <div class="flex justify-between items-center mb-8 border-b border-gray-800 pb-4">
+            <h2 class="text-2xl font-bold text-gradient-gold" data-i18n="products_title">منتجاتنا المميزة</h2>
+            <div class="text-sm text-gray-400" data-i18n="currency_hint">الأسعار بالدينار الجزائري (DZD)</div>
         </div>
 
-    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-database-compat.js"></script>
+        <!-- Products Grid -->
+        <div id="products-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            <!-- Products will be injected here by JS -->
+        </div>
 
-    <script>
-        const firebaseConfig = {
-            apiKey: "AIzaSyAJcauEZW9nxWNcSpTCJAA9idnaVgiGj2c",
-            authDomain: "aziz-auto-parts.firebaseapp.com",
-            projectId: "aziz-auto-parts",
-            storageBucket: "aziz-auto-parts.firebasestorage.app",
-            messagingSenderId: "112451188817",
-            appId: "1:112451188817:web:a05f083cd71476ffca6070",
-            databaseURL: "https://aziz-auto-parts-default-rtdb.firebaseio.com/"
-        };
+    </main>
 
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.database();
+    <!-- Footer -->
+    <footer class="bg-royal-dark border-t border-royal-gold/30 pt-12 pb-6">
+        <div class="container mx-auto px-4 text-center">
+            <h3 class="text-2xl font-bold text-royal-gold font-arabic mb-4">تم بحمد الله بناء موقع عبد العزيز قرينيك</h3>
+            <p class="text-gray-400 mb-6 max-w-2xl mx-auto" data-i18n="footer_desc">
+                لقطع غيار السيارات باحترافية عالية وتصميم عصري يجمع بين الفخامة والسهولة في الاستخدام.
+            </p>
+            <div class="flex justify-center gap-6 mb-8 text-royal-gold">
+                <i class="fa-solid fa-gear text-3xl animate-spin" style="animation-duration: 15s;"></i>
+                <i class="fa-solid fa-car text-3xl"></i>
+                <i class="fa-solid fa-gem text-3xl"></i>
+            </div>
+            <p class="text-xs text-gray-600">© 2023 Syrat Auto Parts. All Rights Reserved.</p>
+        </div>
+    </footer>
 
-        // عرض السلعة في الصفحة
-        db.ref('products').on('value', (snapshot) => {
-            const list = document.getElementById('products-list');
-            list.innerHTML = '';
-            snapshot.forEach((child) => {
-                const item = child.val();
-                list.innerHTML += `
-                    <div class="card">
-                        <div class="badge">جديد</div>
-                        <img src="${item.img || 'https://via.placeholder.com/300'}">
-                        <div class="card-info">
-                            <div class="card-title">${item.name}</div>
-                            <div class="card-price">${item.price} DA</div>
+    <!-- Cart Sidebar -->
+    <div id="cart-sidebar" class="fixed inset-y-0 right-0 w-full md:w-96 bg-royal-card shadow-2xl transform translate-x-full transition-transform duration-300 z-50 border-l border-royal-gold/30 flex flex-col">
+        <div class="p-4 bg-royal-dark flex justify-between items-center border-b border-gray-700">
+            <h3 class="text-xl font-bold text-royal-gold" data-i18n="cart_title">سلة المقتنيات</h3>
+            <button onclick="toggleCart()" class="text-gray-400 hover:text-white"><i class="fa-solid fa-times text-xl"></i></button>
+        </div>
+        
+        <div id="cart-items" class="flex-grow overflow-y-auto p-4 space-y-4">
+            <!-- Cart Items injected here -->
+            <div class="text-center text-gray-500 mt-10" data-i18n="cart_empty">السلة فارغة حالياً</div>
+        </div>
+
+        <div class="p-4 bg-royal-dark border-t border-gray-700">
+            <div class="flex justify-between items-center mb-4 text-lg font-bold">
+                <span data-i18n="total">المجموع:</span>
+                <span id="cart-total" class="text-royal-gold">0 DZD</span>
+            </div>
+            <button onclick="openCheckout()" class="w-full bg-gradient-to-r from-royal-goldDark to-royal-gold text-black font-bold py-3 rounded-lg hover:opacity-90 transition transform active:scale-95" data-i18n="checkout_btn">
+                إتمام الطلب
+            </button>
+        </div>
+    </div>
+    <!-- Cart Overlay -->
+    <div id="cart-overlay" onclick="toggleCart()" class="fixed inset-0 bg-black/70 z-40 hidden backdrop-blur-sm transition-opacity"></div>
+
+    <!-- Admin Login Modal -->
+    <div id="admin-login-modal" class="fixed inset-0 z-[60] hidden flex items-center justify-center bg-black/80 backdrop-blur-md">
+        <div class="bg-royal-card border border-royal-gold/50 p-8 rounded-xl w-full max-w-md shadow-[0_0_30px_rgba(212,175,55,0.2)]">
+            <h3 class="text-2xl font-bold text-center text-royal-gold mb-6" data-i18n="admin_login">دخول المدير</h3>
+            <div class="space-y-4">
+                <input type="password" id="admin-password" placeholder="كلمة المرور" class="w-full p-3 rounded-lg text-center">
+                <div class="flex gap-2">
+                    <button onclick="checkAdmin()" class="flex-1 bg-royal-gold text-black font-bold py-2 rounded-lg hover:bg-yellow-500" data-i18n="login">دخول</button>
+                    <button onclick="closeModal('admin-login-modal')" class="flex-1 bg-gray-700 text-white py-2 rounded-lg hover:bg-gray-600" data-i18n="cancel">إلغاء</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Admin Dashboard Modal -->
+    <div id="admin-dashboard" class="fixed inset-0 z-[60] hidden overflow-y-auto bg-black/90 backdrop-blur-sm">
+        <div class="container mx-auto p-4 py-10">
+            <div class="bg-royal-card border border-royal-gold/30 rounded-xl p-6">
+                <div class="flex justify-between items-center mb-8">
+                    <h2 class="text-2xl font-bold text-royal-gold"><i class="fa-solid fa-cogs"></i> لوحة التحكم</h2>
+                    <button onclick="logoutAdmin()" class="text-red-500 hover:text-red-400 border border-red-500 px-3 py-1 rounded" data-i18n="logout">خروج آمن</button>
+                </div>
+
+                <!-- Add Product Form -->
+                <div class="bg-black/40 p-6 rounded-lg mb-8 border border-gray-800">
+                    <h3 class="text-xl font-bold text-white mb-4 border-b border-gray-700 pb-2" data-i18n="add_product">إضافة / تعديل منتج</h3>
+                    <input type="hidden" id="edit-id">
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                        <!-- Names -->
+                        <div>
+                            <label class="block text-royal-gold text-sm mb-1">الاسم (عربي)</label>
+                            <input type="text" id="prod-name-ar" class="w-full p-2 rounded">
+                        </div>
+                        <div>
+                            <label class="block text-royal-gold text-sm mb-1">Name (English)</label>
+                            <input type="text" id="prod-name-en" class="w-full p-2 rounded">
+                        </div>
+                        <div>
+                            <label class="block text-royal-gold text-sm mb-1">Nom (Français)</label>
+                            <input type="text" id="prod-name-fr" class="w-full p-2 rounded">
+                        </div>
+                        <div>
+                            <label class="block text-royal-gold text-sm mb-1" data-i18n="price">السعر (DZD)</label>
+                            <input type="number" id="prod-price" class="w-full p-2 rounded">
                         </div>
                     </div>
-                `;
+
+                    <!-- Descriptions -->
+                    <div class="grid grid-cols-1 gap-4 mb-4">
+                        <div>
+                            <label class="block text-royal-gold text-sm mb-1">الوصف (عربي)</label>
+                            <textarea id="prod-desc-ar" rows="2" class="w-full p-2 rounded"></textarea>
+                        </div>
+                        <div>
+                            <label class="block text-royal-gold text-sm mb-1">Description (English)</label>
+                            <textarea id="prod-desc-en" rows="2" class="w-full p-2 rounded"></textarea>
+                        </div>
+                        <div>
+                            <label class="block text-royal-gold text-sm mb-1">Description (Français)</label>
+                            <textarea id="prod-desc-fr" rows="2" class="w-full p-2 rounded"></textarea>
+                        </div>
+                    </div>
+
+                    <!-- Image Upload -->
+                    <div class="mb-4">
+                        <label class="block text-royal-gold text-sm mb-1" data-i18n="image">صورة المنتج</label>
+                        <input type="file" id="prod-image" accept="image/*" class="w-full text-sm text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-royal-gold file:text-black hover:file:bg-yellow-500 cursor-pointer">
+                        <div id="image-preview" class="mt-2 w-24 h-24 bg-gray-800 rounded border border-gray-700 overflow-hidden hidden">
+                            <img src="" class="w-full h-full object-cover">
+                        </div>
+                    </div>
+
+                    <div class="flex gap-2">
+                        <button onclick="saveProduct()" class="bg-green-600 text-white px-6 py-2 rounded hover:bg-green-500" data-i18n="save">حفظ</button>
+                        <button onclick="clearForm()" class="bg-gray-600 text-white px-6 py-2 rounded hover:bg-gray-500" data-i18n="clear">مسح الحقول</button>
+                    </div>
+                </div>
+
+                <!-- Products List for Admin -->
+                <h3 class="text-xl font-bold text-white mb-4" data-i18n="manage_products">إدارة المنتجات</h3>
+                <div id="admin-products-list" class="space-y-2 max-h-96 overflow-y-auto">
+                    <!-- List populated by JS -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Checkout Modal -->
+    <div id="checkout-modal" class="fixed inset-0 z-[60] hidden flex items-center justify-center bg-black/80 backdrop-blur-md">
+        <div class="bg-royal-card border border-royal-gold/50 p-8 rounded-xl w-full max-w-md shadow-2xl relative overflow-hidden">
+            <div class="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-royal-goldDark to-royal-gold"></div>
+            <h3 class="text-2xl font-bold text-center text-royal-gold mb-6" data-i18n="complete_order">إتمام الطلب</h3>
+            
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-gray-400 text-sm mb-1" data-i18n="your_phone">رقم هاتفك للتواصل</label>
+                    <div class="flex">
+                        <span class="bg-gray-800 border border-gray-700 border-r-0 px-3 py-2 text-gray-400 rounded-l-lg">+213</span>
+                        <input type="tel" id="customer-phone" placeholder="6XX XX XX XX" class="flex-1 p-2 rounded-r-lg border-l-0">
+                    </div>
+                </div>
+                
+                <div class="bg-black/30 p-3 rounded text-sm text-gray-300">
+                    <p class="mb-1"><i class="fa-brands fa-whatsapp text-green-500"></i> <span data-i18n="send_wa">سيتم إرسال الطلب إلى واتسابنا:</span></p>
+                    <p class="text-royal-gold font-bold">0663435686</p>
+                </div>
+
+                <div class="flex gap-2 mt-6">
+                    <button onclick="processOrder()" class="flex-1 bg-green-600 text-white font-bold py-3 rounded-lg hover:bg-green-500 flex items-center justify-center gap-2">
+                        <i class="fa-brands fa-whatsapp"></i> <span data-i18n="confirm_order">تأكيد وإرسال</span>
+                    </button>
+                    <button onclick="closeModal('checkout-modal')" class="px-4 bg-gray-700 text-white rounded-lg hover:bg-gray-600" data-i18n="cancel">إلغاء</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Success Modal -->
+    <div id="success-modal" class="fixed inset-0 z-[70] hidden flex items-center justify-center bg-black/90">
+        <div class="text-center p-8 max-w-sm animate-float">
+            <div class="w-24 h-24 bg-royal-gold rounded-full flex items-center justify-center mx-auto mb-6 shadow-[0_0_30px_#d4af37]">
+                <i class="fa-solid fa-check text-4xl text-black"></i>
+            </div>
+            <h2 class="text-3xl font-bold text-white mb-2 font-arabic" data-i18n="thank_you">شكراً جزيلاً</h2>
+            <p class="text-royal-gold mb-6" data-i18n="congrats">تم استلام طلبك بنجاح! سيتم التواصل معك قريباً.</p>
+            <button onclick="closeModal('success-modal')" class="bg-transparent border border-royal-gold text-royal-gold px-8 py-2 rounded-full hover:bg-royal-gold hover:text-black transition" data-i18n="continue">مواصلة التسوق</button>
+        </div>
+    </div>
+
+    <!-- JavaScript Logic -->
+    <script>
+        // --- DATA & STATE ---
+        const DEFAULT_PASSWORD = "admin"; // Simple password for demo
+        let currentLang = 'ar';
+        let isAdmin = false;
+        let cart = [];
+        
+        // Default Products with Multi-language support
+        const defaultProducts = [
+            {
+                id: 1,
+                price: 3500,
+                image: "https://picsum.photos/seed/oil/400/400",
+                name: { ar: "فلتر زيت عالي الجودة", en: "High Quality Oil Filter", fr: "Filtre à huile de haute qualité" },
+                desc: { ar: "فلتر زيت متين يناسب معظم السيارات الأوروبية واليابانية.", en: "Durable oil filter suitable for most European and Japanese cars.", fr: "Filtre à huile durable adapté à la plupart des voitures européennes et japonaises." }
+            },
+            {
+                id: 2,
+                price: 12000,
+                image: "https://picsum.photos/seed/brake/400/400",
+                name: { ar: "تيل فرامل أمامي", en: "Front Brake Pads", fr: "Plaquettes de frein avant" },
+                desc: { ar: "تيل فرامل بقوة توقف عالية ومقاومة للحرارة.", en: "High stopping power brake pads with heat resistance.", fr: "Plaquettes de frein à haute puissance d'arrêt et résistant à la chaleur." }
+            },
+            {
+                id: 3,
+                price: 800,
+                image: "https://picsum.photos/seed/spark/400/400",
+                name: { ar: "بوجي شمع", en: "Spark Plugs (Set of 4)", fr: "Bougies d'allumage (Lot de 4)" },
+                desc: { ar: "مجموعة بوجي لتحسين استهلاك الوقود وقوة المحرك.", en: "Set of spark plugs to improve fuel economy and engine power.", fr: "Ensemble de bougies pour améliorer l'économie de carburant et la puissance du moteur." }
+            },
+            {
+                id: 4,
+                price: 2500,
+                image: "https://picsum.photos/seed/belt/400/400",
+                name: { ar: "حزام دينمو", en: "Alternator Belt", fr: "Courroie d'alternateur" },
+                desc: { ar: "حزام مطاطي متين مضمون لمدة طويلة.", en: "Durable rubber belt guaranteed for a long period.", fr: "Courroie en caoutchouc durable garantie pour une longue période." }
+            }
+        ];
+
+        // Translations
+        const i18n = {
+            ar: {
+                hero_title_owner: "صاحب موقع عبد العزيز قرينيك",
+                hero_desc: "محل متواجد في ولاية نعامة دائرة عين صفراء. خدمة توصيل متوفرة إلى جميع ولايات وطن 69.",
+                follow_fb: "تابعنا على فيسبوك",
+                contact_wa: "تواصل معنا",
+                products_title: "منتجاتنا المميزة",
+                currency_hint: "الأسعار بالدينار الجزائري (DZD)",
+                cart_title: "سلة المقتنيات",
+                cart_empty: "السلة فارغة حالياً",
+                total: "المجموع:",
+                checkout_btn: "إتمام الطلب",
+                admin_login: "دخول المدير",
+                login: "دخول",
+                cancel: "إلغاء",
+                logout: "خروج آمن",
+                add_product: "إضافة / تعديل منتج",
+                price: "السعر (DZD)",
+                image: "صورة المنتج",
+                save: "حفظ",
+                clear: "مسح الحقول",
+                manage_products: "إدارة المنتجات",
+                complete_order: "إتمام الطلب",
+                your_phone: "رقم هاتفك للتواصل",
+                send_wa: "سيتم إرسال الطلب إلى واتسابنا:",
+                confirm_order: "تأكيد وإرسال",
+                thank_you: "شكراً جزيلاً",
+                congrats: "تم استلام طلبك بنجاح! سيتم التواصل معك قريباً.",
+                continue: "مواصلة التسوق",
+                edit: "تعديل",
+                delete: "حذف",
+                add_to_cart: "أضف للسلة"
+            },
+            en: {
+                hero_title_owner: "Site Owner: Abdelaziz Grinek",
+                hero_desc: "Store located in Naama State, Ain Sefra District. Delivery service available to all 69 national states.",
+                follow_fb: "Follow us on Facebook",
+                contact_wa: "Contact Us",
+                products_title: "Featured Products",
+                currency_hint: "Prices in Algerian Dinar (DZD)",
+                cart_title: "Shopping Cart",
+                cart_empty: "Your cart is currently empty",
+                total: "Total:",
+                checkout_btn: "Checkout",
+                admin_login: "Admin Login",
+                login: "Login",
+                cancel: "Cancel",
+                logout: "Secure Logout",
+                add_product: "Add / Edit Product",
+                price: "Price (DZD)",
+                image: "Product Image",
+                save: "Save",
+                clear: "Clear Fields",
+                manage_products: "Manage Products",
+                complete_order: "Complete Order",
+                your_phone: "Your Phone Number",
+                send_wa: "Order will be sent to our WhatsApp:",
+                confirm_order: "Confirm & Send",
+                thank_you: "Thank You Very Much",
+                congrats: "Your order has been received successfully! We will contact you soon.",
+                continue: "Continue Shopping",
+                edit: "Edit",
+                delete: "Delete",
+                add_to_cart: "Add to Cart"
+            },
+            fr: {
+                hero_title_owner: "Propriétaire : Abdelaziz Grinek",
+                hero_desc: "Magasin situé à l'État de Naama, District d'Ain Sefra. Service de livraison disponible dans les 69 wilayas.",
+                follow_fb: "Suivez-nous sur Facebook",
+                contact_wa: "Contactez-nous",
+                products_title: "Produits Vedettes",
+                currency_hint: "Prix en Dinar Algérien (DZD)",
+                cart_title: "Panier d'achat",
+                cart_empty: "Votre panier est vide",
+                total: "Total:",
+                checkout_btn: "Passer la commande",
+                admin_login: "Connexion Admin",
+                login: "Connexion",
+                cancel: "Annuler",
+                logout: "Déconnexion Sécurisée",
+                add_product: "Ajouter / Modifier Produit",
+                price: "Prix (DZD)",
+                image: "Image du produit",
+                save: "Enregistrer",
+                clear: "Effacer",
+                manage_products: "Gérer les produits",
+                complete_order: "Finaliser la commande",
+                your_phone: "Votre numéro de téléphone",
+                send_wa: "La commande sera envoyée à notre WhatsApp :",
+                confirm_order: "Confirmer & Envoyer",
+                thank_you: "Merci Beaucoup",
+                congrats: "Votre commande a été reçue avec succès ! Nous vous contacterons bientôt.",
+                continue: "Continuer vos achats",
+                edit: "Modifier",
+                delete: "Supprimer",
+                add_to_cart: "Ajouter au panier"
+            }
+        };
+
+        // --- INITIALIZATION ---
+        document.addEventListener('DOMContentLoaded', () => {
+            loadProducts();
+            renderProducts();
+            updateUI();
+            
+            // Image Preview Listener
+            document.getElementById('prod-image').addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if(file) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        const preview = document.getElementById('image-preview');
+                        preview.querySelector('img').src = e.target.result;
+                        preview.classList.remove('hidden');
+                    }
+                    reader.readAsDataURL(file);
+                }
             });
         });
+
+        // --- LOCAL STORAGE HELPERS ---
+        function getProducts() {
+            const stored = localStorage.getItem('syrat_products');
+            return stored ? JSON.parse(stored) : defaultProducts;
+        }
+
+        function saveProductsToStorage(products) {
+            try {
+                localStorage.setItem('syrat_products', JSON.stringify(products));
+            } catch (e) {
+                alert("Storage full! Image quality reduced or use fewer large images.");
+            }
+        }
+
+        function loadProducts() {
+            if(!localStorage.getItem('syrat_products')) {
+                saveProductsToStorage(defaultProducts);
+            }
+        }
+
+        // --- LANGUAGE HANDLING ---
+        function setLanguage(lang) {
+            currentLang = lang;
+            document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
+            
+            // Update Font
+            document.body.style.fontFamily = lang === 'ar' ? "'Cairo', sans-serif" : "'Poppins', sans-serif";
+
+            // Update Buttons
+            document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active', 'bg-royal-gold', 'text-black', 'font-bold'));
+            document.getElementById(`btn-${lang}`).classList.add('active');
+            
+            // Mobile buttons
+            const mBtn = document.getElementById(`btn-${lang}-m`);
+            if(mBtn) {
+                document.querySelectorAll('[id$="-m"]').forEach(b => {
+                    b.classList.remove('bg-royal-gold', 'text-black', 'font-bold');
+                    b.classList.add('border', 'border-gray-600');
+                });
+                mBtn.classList.add('bg-royal-gold', 'text-black', 'font-bold');
+                mBtn.classList.remove('border', 'border-gray-600');
+            }
+
+            updateUI();
+            renderProducts();
+            renderAdminList(); // Refresh admin list names
+        }
+
+        function updateUI() {
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (i18n[currentLang][key]) {
+                    el.textContent = i18n[currentLang][key];
+                }
+            });
+            renderCart();
+        }
+
+        // --- RENDERING ---
+        function renderProducts() {
+            const grid = document.getElementById('products-grid');
+            const products = getProducts();
+            
+            grid.innerHTML = products.map(p => `
+                <div class="bg-royal-card rounded-xl overflow-hidden border border-gray-800 hover:border-royal-gold/50 transition duration-300 group relative shadow-lg">
+                    <div class="h-48 overflow-hidden relative">
+                        <img src="${p.image}" alt="${p.name[currentLang]}" class="w-full h-full object-cover group-hover:scale-110 transition duration-500">
+                        <div class="absolute inset-0 bg-black/20 group-hover:bg-transparent transition"></div>
+                    </div>
+                    <div class="p-4">
+                        <h3 class="text-lg font-bold text-white mb-1 truncate">${p.name[currentLang]}</h3>
+                        <p class="text-xs text-gray-400 mb-3 h-8 overflow-hidden text-ellipsis">${p.desc[currentLang]}</p>
+                        <div class="flex justify-between items-center">
+                            <span class="text-royal-gold font-bold text-lg">${p.price.toLocaleString()} DZD</span>
+                            <button onclick="addToCart(${p.id})" class="bg-gray-800 hover:bg-royal-gold hover:text-black text-white w-8 h-8 rounded-full flex items-center justify-center transition">
+                                <i class="fa-solid fa-plus"></i>
+                            </button>
+                        </div>
+                    </div>
+                    ${isAdmin ? `
+                    <div class="absolute top-2 right-2 flex gap-2">
+                        <button onclick="editProduct(${p.id})" class="bg-blue-600 text-white w-8 h-8 rounded-full shadow hover:bg-blue-500"><i class="fa-solid fa-pen text-xs"></i></button>
+                        <button onclick="deleteProduct(${p.id})" class="bg-red-600 text-white w-8 h-8 rounded-full shadow hover:bg-red-500"><i class="fa-solid fa-trash text-xs"></i></button>
+                    </div>` : ''}
+                </div>
+            `).join('');
+        }
+
+        // --- CART LOGIC ---
+        function addToCart(id) {
+            const products = getProducts();
+            const product = products.find(p => p.id === id);
+            const existing = cart.find(item => item.id === id);
+            
+            if (existing) {
+                existing.qty++;
+            } else {
+                cart.push({ ...product, qty: 1 });
+            }
+            updateCartCount();
+            renderCart();
+            
+            // Small animation or toast could go here
+            toggleCart(true); // Open cart to show user
+        }
+
+        function removeFromCart(id) {
+            cart = cart.filter(item => item.id !== id);
+            updateCartCount();
+            renderCart();
+        }
+
+        function updateQty(id, change) {
+            const item = cart.find(i => i.id === id);
+            if(item) {
+                item.qty += change;
+                if(item.qty <= 0) removeFromCart(id);
+                else renderCart();
+            }
+            updateCartCount();
+        }
+
+        function updateCartCount() {
+            const count = cart.reduce((acc, item) => acc + item.qty, 0);
+            const badge = document.getElementById('cart-count');
+            badge.textContent = count;
+            badge.style.opacity = count > 0 ? '1' : '0';
+        }
+
+        function renderCart() {
+            const container = document.getElementById('cart-items');
+            const totalEl = document.getElementById('cart-total');
+            
+            if(cart.length === 0) {
+                container.innerHTML = `<div class="text-center text-gray-500 mt-10">${i18n[currentLang].cart_empty}</div>`;
+                totalEl.textContent = "0 DZD";
+                return;
+            }
+
+            let total = 0;
+            container.innerHTML = cart.map(item => {
+                total += item.price * item.qty;
+                return `
+                <div class="flex gap-3 bg-black/40 p-3 rounded-lg border border-gray-800">
+                    <img src="${item.image}" class="w-16 h-16 object-cover rounded">
+                    <div class="flex-1">
+                        <h4 class="font-bold text-sm text-white">${item.name[currentLang]}</h4>
+                        <div class="text-royal-gold text-sm font-bold">${item.price} DZD</div>
+                        <div class="flex items-center gap-2 mt-1">
+                            <button onclick="updateQty(${item.id}, -1)" class="w-5 h-5 bg-gray-700 rounded text-xs hover:bg-gray-600">-</button>
+                            <span class="text-xs">${item.qty}</span>
+                            <button onclick="updateQty(${item.id}, 1)" class="w-5 h-5 bg-gray-700 rounded text-xs hover:bg-gray-600">+</button>
+                        </div>
+                    </div>
+                    <button onclick="removeFromCart(${item.id})" class="text-red-500 hover:text-red-400"><i class="fa-solid fa-trash"></i></button>
+                </div>
+                `;
+            }).join('');
+            
+            totalEl.textContent = total.toLocaleString() + " DZD";
+        }
+
+        function toggleCart(forceOpen = false) {
+            const sidebar = document.getElementById('cart-sidebar');
+            const overlay = document.getElementById('cart-overlay');
+            const isOpen = !sidebar.classList.contains('translate-x-full');
+            
+            if (forceOpen || !isOpen) {
+                sidebar.classList.remove('translate-x-full');
+                overlay.classList.remove('hidden');
+            } else {
+                sidebar.classList.add('translate-x-full');
+                overlay.classList.add('hidden');
+            }
+        }
+
+        // --- CHECKOUT LOGIC ---
+        function openCheckout() {
+            if(cart.length === 0) return;
+            toggleCart(); // close cart
+            document.getElementById('checkout-modal').classList.remove('hidden');
+        }
+
+        function processOrder() {
+            const phone = document.getElementById('customer-phone').value.trim();
+            if(phone.length < 8) {
+                alert("الرجاء إدخال رقم هاتف صحيح");
+                return;
+            }
+
+            // Build Message
+            let message = `*طلب جديد من الموقع*\n\n`;
+            message += `*الزبون:* +213${phone}\n`;
+            message += `-------------------\n`;
+            
+            let total = 0;
+            cart.forEach(item => {
+                const subtotal = item.price * item.qty;
+                total += subtotal;
+                message += `• ${item.name[currentLang]} (x${item.qty})\n  ${subtotal} DZD\n`;
+            });
+            
+            message += `-------------------\n`;
+            message += `*المجموع الكلي:* ${total} DZD`;
+            message += `\n\nالعنوان: ولاية نعامة، دائرة عين صفراء`;
+
+            // Clear Cart
+            cart = [];
+            updateCartCount();
+            renderCart();
+            closeModal('checkout-modal');
+
+            // Show Success
+            document.getElementById('success-modal').classList.remove('hidden');
+            
+            // Open WhatsApp
+            const waNumber = "213663435686";
+            const url = `https://wa.me/${waNumber}?text=${encodeURIComponent(message)}`;
+            window.open(url, '_blank');
+        }
+
+
+        // --- ADMIN LOGIC ---
+        function openAdminLogin() {
+            if(isAdmin) {
+                document.getElementById('admin-dashboard').classList.remove('hidden');
+                renderAdminList();
+            } else {
+                document.getElementById('admin-login-modal').classList.remove('hidden');
+            }
+        }
+
+        function checkAdmin() {
+            const pass = document.getElementById('admin-password').value;
+            if(pass === DEFAULT_PASSWORD) {
+                isAdmin = true;
+                closeModal('admin-login-modal');
+                document.getElementById('admin-dashboard').classList.remove('hidden');
+                renderAdminList();
+                renderProducts(); // Re-render to show edit buttons
+                document.getElementById('admin-password').value = '';
+            } else {
+                alert("كلمة المرور خاطئة!");
+            }
+        }
+
+        function logoutAdmin() {
+            isAdmin = false;
+            closeModal('admin-dashboard');
+            renderProducts();
+        }
+
+        function renderAdminList() {
+            const list = document.getElementById('admin-products-list');
+            const products = getProducts();
+            
+            list.innerHTML = products.map(p => `
+                <div class="flex items-center justify-between bg-black/30 p-2 rounded border border-gray-800">
+                    <div class="flex items-center gap-3">
+                        <img src="${p.image}" class="w-10 h-10 object-cover rounded">
+                        <span class="text-white text-sm">${p.name[currentLang]}</span>
+                    </div>
+                    <div class="flex gap-2">
+                        <button onclick="editProduct(${p.id})" class="text-blue-400 hover:text-blue-300"><i class="fa-solid fa-pen"></i></button>
+                        <button onclick="deleteProduct(${p.id})" class="text-red-400 hover:text-red-300"><i class="fa-solid fa-trash"></i></button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function saveProduct() {
+            const idInput = document.getElementById('edit-id').value;
+            const products = getProducts();
+            
+            const nameAr = document.getElementById('prod-name-ar').value;
+            const nameEn = document.getElementById('prod-name-en').value;
+            const nameFr = document.getElementById('prod-name-fr').value;
+            const price = Number(document.getElementById('prod-price').value);
+            const descAr = document.getElementById('prod-desc-ar').value;
+            const descEn = document.getElementById('prod-desc-en').value;
+            const descFr = document.getElementById('prod-desc-fr').value;
+            const fileInput = document.getElementById('prod-image');
+            
+            if(!nameAr || !price) {
+                alert("يرجى ملء الاسم بالعربية والسعر على الأقل");
+                return;
+            }
+
+            // Image Handling
+            let imageData = "https://picsum.photos/seed/new/400/400"; // Default fallback
+            if (fileInput.files && fileInput.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    processSaveWithImage(e.target.result);
+                };
+                reader.readAsDataURL(fileInput.files[0]);
+                return; // Wait for reader
+            } else if (idInput) {
+                // Editing existing, keep old image if not changed
+                const existing = products.find(p => p.id == idInput);
+                if(existing) imageData = existing.image;
+            }
+
+            processSaveWithImage(imageData);
+        }
+
+        function processSaveWithImage(imageData) {
+            const idInput = document.getElementById('edit-id').value;
+            const products = getProducts();
+            
+            const newProduct = {
+                id: idInput ? Number(idInput) : Date.now(),
+                image: imageData,
+                price: Number(document.getElementById('prod-price').value),
+                name: {
+                    ar: document.getElementById('prod-name-ar').value,
+                    en: document.getElementById('prod-name-en').value,
+                    fr: document.getElementById('prod-name-fr').value
+                },
+                desc: {
+                    ar: document.getElementById('prod-desc-ar').value,
+                    en: document.getElementById('prod-desc-en').value,
+                    fr: document.getElementById('prod-desc-fr').value
+                }
+            };
+
+            if (idInput) {
+                const index = products.findIndex(p => p.id == idInput);
+                if(index !== -1) products[index] = newProduct;
+            } else {
+                products.unshift(newProduct);
+            }
+
+            saveProductsToStorage(products);
+            renderProducts();
+            renderAdminList();
+            clearForm();
+            
+            // Show feedback
+            const btn = document.querySelector('button[onclick="saveProduct()"]');
+            const originalText = btn.textContent;
+            btn.textContent = "تم الحفظ!";
+            setTimeout(() => btn.textContent = originalText, 1500);
+        }
+
+        function editProduct(id) {
+            const products = getProducts();
+            const p = products.find(prod => prod.id === id);
+            if(!p) return;
+
+            document.getElementById('edit-id').value = p.id;
+            document.getElementById('prod-name-ar').value = p.name.ar;
+            document.getElementById('prod-name-en').value = p.name.en;
+            document.getElementById('prod-name-fr').value = p.name.fr;
+            document.getElementById('prod-price').value = p.price;
+            document.getElementById('prod-desc-ar').value = p.desc.ar;
+            document.getElementById('prod-desc-en').value = p.desc.en;
+            document.getElementById('prod-desc-fr').value = p.desc.fr;
+            
+            const preview = document.getElementById('image-preview');
+            preview.querySelector('img').src = p.image;
+            preview.classList.remove('hidden');
+            
+            // Scroll to form
+            document.getElementById('admin-dashboard').children[0].children[0].scrollIntoView({behavior: "smooth"});
+        }
+
+        function deleteProduct(id) {
+            if(confirm('هل أنت متأكد من حذف هذا المنتج؟')) {
+                let products = getProducts();
+                products = products.filter(p => p.id !== id);
+                saveProductsToStorage(products);
+                renderProducts();
+                renderAdminList();
+            }
+        }
+
+        function clearForm() {
+            document.getElementById('edit-id').value = '';
+            document.getElementById('prod-name-ar').value = '';
+            document.getElementById('prod-name-en').value = '';
+            document.getElementById('prod-name-fr').value = '';
+            document.getElementById('prod-price').value = '';
+            document.getElementById('prod-desc-ar').value = '';
+            document.getElementById('prod-desc-en').value = '';
+            document.getElementById('prod-desc-fr').value = '';
+            document.getElementById('prod-image').value = '';
+            document.getElementById('image-preview').classList.add('hidden');
+        }
+
+        // --- UTILS ---
+        function closeModal(id) {
+            document.getElementById(id).classList.add('hidden');
+        }
+
+        // Close modals on escape key
+        document.addEventListener('keydown', (e) => {
+            if(e.key === 'Escape') {
+                document.querySelectorAll('[id$="-modal"], #admin-dashboard').forEach(el => el.classList.add('hidden'));
+                if(!document.getElementById('cart-sidebar').classList.contains('translate-x-full')) toggleCart();
+            }
+        });
+
     </script>
 </body>
 </html>
