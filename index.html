@@ -3,13 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>عبد العزيز قرينيك</title>
+
+<title>Auto Parts</title>
 
 <style>
 :root{
   --black:#0a0a0a;
   --gold:#d4af37;
-  --accent:#1f2937;
 }
 
 body{
@@ -19,19 +19,26 @@ body{
   color:white;
 }
 
-/* Header */
 header{
   padding:20px;
   text-align:center;
   color:var(--gold);
-  border-bottom:1px solid var(--gold);
 }
 
-/* Language */
 .lang{
   position:absolute;
-  top:10px;
   right:10px;
+  top:10px;
+}
+
+.search{
+  text-align:center;
+  margin:10px;
+}
+
+.search input{
+  padding:10px;
+  width:60%;
 }
 
 /* Products */
@@ -43,23 +50,13 @@ header{
 }
 
 .card{
-  background:var(--accent);
+  background:#111;
   padding:15px;
-  border-radius:15px;
   border:1px solid var(--gold);
-  transition:.3s;
+  border-radius:10px;
 }
-.card:hover{transform:scale(1.03);}
 
-img{width:100%;border-radius:10px;}
-
-button{
-  background:var(--gold);
-  border:none;
-  padding:10px;
-  margin-top:10px;
-  cursor:pointer;
-}
+img{width:100%;}
 
 /* Cart */
 .cart-btn{
@@ -80,24 +77,19 @@ button{
   background:#111;
   display:none;
   padding:20px;
-  overflow:auto;
 }
 
-/* Admin */
-.admin-btn{
-  position:fixed;
-  left:10px;
-  bottom:10px;
+button{
   background:var(--gold);
+  border:none;
   padding:10px;
   cursor:pointer;
+  margin-top:10px;
 }
 
-/* Footer */
 footer{
   text-align:center;
   padding:20px;
-  border-top:1px solid var(--gold);
   color:var(--gold);
 }
 </style>
@@ -113,55 +105,88 @@ footer{
 </select>
 </div>
 
-<header id="title">
-صاحب الموقع عبد العزيز قرينيك<br>
-محل متواجد في ولاية النعامة - عين الصفراء<br>
-توصيل إلى جميع ولايات الوطن 🇩🇿
-</header>
+<header id="title"></header>
+
+<div class="search">
+<input type="text" id="searchInput" oninput="search()" placeholder="">
+</div>
 
 <div class="container" id="products"></div>
 
 <div class="cart-btn" onclick="toggleCart()">🛒</div>
 
 <div class="cart" id="cart">
-<h3>السلة</h3>
+<h3 id="cartTitle"></h3>
 <ul id="cartItems"></ul>
 <p id="total"></p>
-
-<button onclick="sendOrder()">إرسال الطلب</button>
+<button onclick="sendOrder()" id="orderBtn"></button>
 </div>
 
-<div class="admin-btn" onclick="adminLogin()">⚙️</div>
-
-<footer id="footer">
-© 2026 موقع احترافي - عبد العزيز قرينيك
-</footer>
+<footer id="footer"></footer>
 
 <script>
-let products = JSON.parse(localStorage.getItem("products")) || [
- {name:{ar:"فلتر زيت",fr:"Filtre",en:"Oil Filter"}, price:2000, img:"https://via.placeholder.com/300"},
- {name:{ar:"بطارية",fr:"Batterie",en:"Battery"}, price:12000, img:"https://via.placeholder.com/300"}
+let lang="ar";
+
+/* ترجمة */
+const T={
+ ar:{
+  title:"عبد العزيز قرينيك - محل قطع غيار | توصيل 58 ولاية",
+  search:"ابحث عن منتج...",
+  cart:"السلة",
+  total:"المجموع",
+  order:"إرسال الطلب",
+  thanks:"شكرا لطلبك 🎉",
+  footer:"© 2026 جميع الحقوق محفوظة"
+ },
+ fr:{
+  title:"Abdelaziz - Pièces Auto | Livraison nationale",
+  search:"Rechercher un produit...",
+  cart:"Panier",
+  total:"Total",
+  order:"Envoyer",
+  thanks:"Merci pour votre commande 🎉",
+  footer:"© 2026 Tous droits réservés"
+ },
+ en:{
+  title:"Auto Parts Store | Delivery Available",
+  search:"Search product...",
+  cart:"Cart",
+  total:"Total",
+  order:"Send Order",
+  thanks:"Thank you 🎉",
+  footer:"© 2026 All rights reserved"
+ }
+};
+
+/* منتجات */
+let products=[
+ {name:{ar:"فلتر زيت",fr:"Filtre à huile",en:"Oil Filter"}, price:2000,img:"https://via.placeholder.com/300"},
+ {name:{ar:"بطارية",fr:"Batterie",en:"Battery"}, price:12000,img:"https://via.placeholder.com/300"}
 ];
 
 let cart=[]; let total=0;
-let currentLang="ar";
 
-/* عرض المنتجات */
-function render(){
- let container=document.getElementById("products");
- container.innerHTML="";
- products.forEach((p,i)=>{
-  container.innerHTML+=`
-   <div class="card">
-    <img src="${p.img}">
-    <h3>${p.name[currentLang]}</h3>
-    <p>${p.price} دج</p>
-    <button onclick="add(${i})">+</button>
-   </div>
-  `;
+/* عرض */
+function render(list=products){
+ let c=document.getElementById("products");
+ c.innerHTML="";
+ list.forEach((p,i)=>{
+  c.innerHTML+=`
+  <div class="card">
+   <img src="${p.img}">
+   <h3>${p.name[lang]}</h3>
+   <p>${p.price} دج</p>
+   <button onclick="add(${i})">+</button>
+  </div>`;
  });
 }
-render();
+
+/* بحث */
+function search(){
+ let val=document.getElementById("searchInput").value.toLowerCase();
+ let filtered=products.filter(p=>p.name[lang].toLowerCase().includes(val));
+ render(filtered);
+}
 
 /* سلة */
 function add(i){
@@ -174,9 +199,9 @@ function updateCart(){
  let list=document.getElementById("cartItems");
  list.innerHTML="";
  cart.forEach(p=>{
-  list.innerHTML+=`<li>${p.name[currentLang]}</li>`;
+  list.innerHTML+=`<li>${p.name[lang]}</li>`;
  });
- document.getElementById("total").innerText="المجموع: "+total+" دج";
+ document.getElementById("total").innerText=T[lang].total+": "+total+" دج";
 }
 
 function toggleCart(){
@@ -186,36 +211,25 @@ function toggleCart(){
 
 /* إرسال */
 function sendOrder(){
- let msg="طلب: "+cart.map(p=>p.name[currentLang]).join(", ")+" | "+total;
+ let msg="طلب: "+cart.map(p=>p.name[lang]).join(", ")+" | "+total;
  window.open("https://wa.me/213663435686?text="+encodeURIComponent(msg));
- window.open("https://www.facebook.com/share/17DhVqMX9e/");
- alert("شكرا لطلبك 🎉");
+ alert(T[lang].thanks);
 }
 
-/* Admin */
-function adminLogin(){
- let pass=prompt("كلمة السر:");
- if(pass==="admin123"){
-  let name=prompt("اسم المنتج:");
-  let price=prompt("السعر:");
-  let img=prompt("رابط الصورة:");
-  products.push({
-    name:{ar:name,fr:name,en:name},
-    price:Number(price),
-    img:img
-  });
-  localStorage.setItem("products",JSON.stringify(products));
-  render();
- }else{
-  alert("خطأ");
- }
-}
-
-/* لغات */
-function changeLang(lang){
- currentLang=lang;
+/* تغيير لغة */
+function changeLang(l){
+ lang=l;
+ document.getElementById("title").innerText=T[lang].title;
+ document.getElementById("searchInput").placeholder=T[lang].search;
+ document.getElementById("cartTitle").innerText=T[lang].cart;
+ document.getElementById("orderBtn").innerText=T[lang].order;
+ document.getElementById("footer").innerText=T[lang].footer;
  render();
+ updateCart();
 }
+
+/* تشغيل */
+changeLang("ar");
 </script>
 
 </body>
