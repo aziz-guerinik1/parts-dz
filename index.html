@@ -3,12 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Auto Parts - عبد العزيز قرينيك</title>
+<title>عبد العزيز قرينيك</title>
 
 <style>
 :root{
-  --black:#0b0b0b;
+  --black:#0a0a0a;
   --gold:#d4af37;
+  --accent:#1f2937;
 }
 
 body{
@@ -20,11 +21,10 @@ body{
 
 /* Header */
 header{
-  background:linear-gradient(90deg, black, #1a1a1a);
   padding:20px;
   text-align:center;
-  font-size:22px;
   color:var(--gold);
+  border-bottom:1px solid var(--gold);
 }
 
 /* Language */
@@ -34,7 +34,7 @@ header{
   right:10px;
 }
 
-/* Grid */
+/* Products */
 .container{
   display:grid;
   grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
@@ -43,34 +43,35 @@ header{
 }
 
 .card{
-  background:#111;
-  border:1px solid var(--gold);
-  border-radius:15px;
+  background:var(--accent);
   padding:15px;
+  border-radius:15px;
+  border:1px solid var(--gold);
   transition:.3s;
 }
+.card:hover{transform:scale(1.03);}
 
-.card:hover{
-  transform:translateY(-5px);
-}
+img{width:100%;border-radius:10px;}
 
-/* Stars */
-.stars span{
+button{
+  background:var(--gold);
+  border:none;
+  padding:10px;
+  margin-top:10px;
   cursor:pointer;
-  font-size:20px;
 }
 
 /* Cart */
-.cart{
+.cart-btn{
   position:fixed;
-  right:0;
+  right:10px;
   top:50%;
   background:var(--gold);
   padding:15px;
   cursor:pointer;
 }
 
-.cart-box{
+.cart{
   position:fixed;
   right:0;
   top:0;
@@ -82,12 +83,13 @@ header{
   overflow:auto;
 }
 
-/* Buttons */
-button{
+/* Admin */
+.admin-btn{
+  position:fixed;
+  left:10px;
+  bottom:10px;
   background:var(--gold);
-  border:none;
   padding:10px;
-  margin-top:10px;
   cursor:pointer;
 }
 
@@ -112,121 +114,107 @@ footer{
 </div>
 
 <header id="title">
-🚗 محل قطع غيار - عبد العزيز قرينيك
-<br> توصيل إلى جميع ولايات الوطن 🇩🇿
+صاحب الموقع عبد العزيز قرينيك<br>
+محل متواجد في ولاية النعامة - عين الصفراء<br>
+توصيل إلى جميع ولايات الوطن 🇩🇿
 </header>
 
-<div class="container">
+<div class="container" id="products"></div>
 
-<div class="card">
-<img src="https://via.placeholder.com/300">
-<h3 data-key="oil">فلتر زيت</h3>
-<p>2000 دج</p>
+<div class="cart-btn" onclick="toggleCart()">🛒</div>
 
-<div class="stars" onclick="rate(this)">
-<span>⭐</span><span>⭐</span><span>⭐</span><span>⭐</span><span>⭐</span>
-</div>
-
-<textarea placeholder="تعليق"></textarea>
-<button onclick="addToCart('فلتر زيت',2000)">أضف</button>
-</div>
-
-<div class="card">
-<img src="https://via.placeholder.com/300">
-<h3 data-key="battery">بطارية</h3>
-<p>12000 دج</p>
-
-<div class="stars" onclick="rate(this)">
-<span>⭐</span><span>⭐</span><span>⭐</span><span>⭐</span><span>⭐</span>
-</div>
-
-<textarea placeholder="تعليق"></textarea>
-<button onclick="addToCart('بطارية',12000)">أضف</button>
-</div>
-
-</div>
-
-<div class="cart" onclick="toggleCart()">🛒</div>
-
-<div class="cart-box" id="cartBox">
-<h3 id="cartTitle">السلة</h3>
-<ul id="items"></ul>
+<div class="cart" id="cart">
+<h3>السلة</h3>
+<ul id="cartItems"></ul>
 <p id="total"></p>
 
-<button onclick="sendWhatsApp()">واتساب</button>
-<button onclick="sendFacebook()">فايسبوك</button>
+<button onclick="sendOrder()">إرسال الطلب</button>
 </div>
 
+<div class="admin-btn" onclick="adminLogin()">⚙️</div>
+
 <footer id="footer">
-© 2026 جميع الحقوق محفوظة - عبد العزيز قرينيك
+© 2026 موقع احترافي - عبد العزيز قرينيك
 </footer>
 
 <script>
-let cart=[];
-let total=0;
+let products = JSON.parse(localStorage.getItem("products")) || [
+ {name:{ar:"فلتر زيت",fr:"Filtre",en:"Oil Filter"}, price:2000, img:"https://via.placeholder.com/300"},
+ {name:{ar:"بطارية",fr:"Batterie",en:"Battery"}, price:12000, img:"https://via.placeholder.com/300"}
+];
 
-/* Cart */
-function addToCart(name,price){
-  cart.push(name);
-  total+=price;
-  renderCart();
+let cart=[]; let total=0;
+let currentLang="ar";
+
+/* عرض المنتجات */
+function render(){
+ let container=document.getElementById("products");
+ container.innerHTML="";
+ products.forEach((p,i)=>{
+  container.innerHTML+=`
+   <div class="card">
+    <img src="${p.img}">
+    <h3>${p.name[currentLang]}</h3>
+    <p>${p.price} دج</p>
+    <button onclick="add(${i})">+</button>
+   </div>
+  `;
+ });
+}
+render();
+
+/* سلة */
+function add(i){
+ cart.push(products[i]);
+ total+=products[i].price;
+ updateCart();
 }
 
-function renderCart(){
-  let list=document.getElementById("items");
-  list.innerHTML="";
-  cart.forEach(i=>{
-    let li=document.createElement("li");
-    li.textContent=i;
-    list.appendChild(li);
-  });
-  document.getElementById("total").innerText="المجموع: "+total+" دج";
+function updateCart(){
+ let list=document.getElementById("cartItems");
+ list.innerHTML="";
+ cart.forEach(p=>{
+  list.innerHTML+=`<li>${p.name[currentLang]}</li>`;
+ });
+ document.getElementById("total").innerText="المجموع: "+total+" دج";
 }
 
 function toggleCart(){
-  let box=document.getElementById("cartBox");
-  box.style.display=box.style.display==="block"?"none":"block";
+ let c=document.getElementById("cart");
+ c.style.display=c.style.display=="block"?"none":"block";
 }
 
-/* Send */
-function sendWhatsApp(){
-  let msg="طلب: "+cart.join(", ")+" | المجموع: "+total;
-  window.open("https://wa.me/213663435686?text="+encodeURIComponent(msg));
+/* إرسال */
+function sendOrder(){
+ let msg="طلب: "+cart.map(p=>p.name[currentLang]).join(", ")+" | "+total;
+ window.open("https://wa.me/213663435686?text="+encodeURIComponent(msg));
+ window.open("https://www.facebook.com/share/17DhVqMX9e/");
+ alert("شكرا لطلبك 🎉");
 }
 
-function sendFacebook(){
-  window.open("https://www.facebook.com/share/17DhVqMX9e/");
-}
-
-/* Rating */
-function rate(div){
-  let stars=div.children;
-  for(let i=0;i<stars.length;i++){
-    stars[i].style.color="gold";
-  }
-}
-
-/* Admin (simple) */
+/* Admin */
 function adminLogin(){
-  let pass=prompt("كلمة السر:");
-  if(pass==="1234"){
-    alert("مرحبا بالإدارة");
-  }else{
-    alert("خطأ");
-  }
+ let pass=prompt("كلمة السر:");
+ if(pass==="admin123"){
+  let name=prompt("اسم المنتج:");
+  let price=prompt("السعر:");
+  let img=prompt("رابط الصورة:");
+  products.push({
+    name:{ar:name,fr:name,en:name},
+    price:Number(price),
+    img:img
+  });
+  localStorage.setItem("products",JSON.stringify(products));
+  render();
+ }else{
+  alert("خطأ");
+ }
 }
 
-/* Language */
-const translations={
-  ar:{oil:"فلتر زيت",battery:"بطارية"},
-  fr:{oil:"Filtre à huile",battery:"Batterie"},
-  en:{oil:"Oil Filter",battery:"Battery"}
-};
-
+/* لغات */
 function changeLang(lang){
-  document.querySelectorAll("[data-key]").forEach(el=>{
-    el.textContent=translations[lang][el.dataset.key];
-  });
+ currentLang=lang;
+ render();
 }
 </script>
 
